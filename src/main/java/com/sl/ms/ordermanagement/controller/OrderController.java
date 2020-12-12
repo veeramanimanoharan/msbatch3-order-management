@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sl.ms.ordermanagement.model.Orders;
 import com.sl.ms.ordermanagement.service.OrderService;
 
 @RestController

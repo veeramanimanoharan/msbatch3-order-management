@@ -1,4 +1,4 @@
-package com.sl.ms.ordermanagement.controller;
+package com.sl.ms.ordermanagement.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

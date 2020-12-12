@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
-import com.sl.ms.ordermanagement.controller.Orders;
+import com.sl.ms.ordermanagement.model.Orders;
 import com.sl.ms.ordermanagement.repository.OrderRepository;
 
 @Service
