@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -22,7 +23,8 @@ public class Items {
 	private int quantity;
 	private double price;
 	private double amount;
-	@JsonIgnore
+//	@JsonIgnore
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "orders_id")
     private Orders order;

@@ -15,6 +15,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Entity
@@ -26,7 +27,7 @@ public class Orders {
 	private int  id;
 	private String name;
 	private Double total_amount;
-
+	@JsonManagedReference
 	 @OneToMany(
 	            mappedBy = "order",
 	            cascade = CascadeType.ALL,
