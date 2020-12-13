@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sl.ms.ordermanagement.model.Items;
 import com.sl.ms.ordermanagement.model.Orders;
+import com.sl.ms.ordermanagement.service.ItemService;
 import com.sl.ms.ordermanagement.service.OrderService;
 
 @RestController
@@ -18,6 +20,9 @@ public class OrderController {
 	
 	@Autowired
 	OrderService orderservice;
+	
+	@Autowired
+	ItemService itemservice;
 	@GetMapping("/")
 	private String msg() {
 		System.out.println("Veera");
@@ -29,9 +34,9 @@ public class OrderController {
 	return orderservice.getAllOrders();
 	}
 	@PostMapping("/order")
-	private boolean saveOrder(@RequestBody Orders order) {
+	private Orders saveOrder(@RequestBody Orders order) {
 		orderservice.save(order);
-		return true;
+		return order;
 		
 	}
 	@GetMapping("/order/{id}")
@@ -39,5 +44,16 @@ public class OrderController {
 		
 		return orderservice.getById(id);
 	}
+		@PostMapping("/order/items")
+		private Items saveItem(@RequestBody Items item) {
+			itemservice.save(item);
+			return item;
+			
+		}
+		@GetMapping("/items")
+		private List<Items> getAllitems() 
+		{
+		return itemservice.getAllItems();
+		}
 	
 }
