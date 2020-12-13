@@ -11,17 +11,39 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 @Entity
 @Table
 public class Orders {
 	
 	@Id
-	 @GeneratedValue(strategy=GenerationType.AUTO)
+//	 @GeneratedValue(strategy=GenerationType.AUTO)
 	private int  id;
 	private String name;
 	private Double total_amount;
 
+	 @OneToMany(
+	            mappedBy = "order",
+	            cascade = CascadeType.ALL,
+	            orphanRemoval = true
+	            )
+//	 @OneToMany(
+//	            mappedBy = "order")
+	 @Fetch(FetchMode.JOIN)
+	    private List<Items> items = new ArrayList<>();
 
+
+	public List<Items> getItems() {
+		return items;
+	}
+	public void setItems(List<Items> items) {
+		this.items = items;
+	}
 	public int getId() {
 		return id;
 	}

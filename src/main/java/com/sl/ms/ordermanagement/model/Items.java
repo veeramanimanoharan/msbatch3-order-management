@@ -1,6 +1,7 @@
 package com.sl.ms.ordermanagement.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -8,18 +9,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table
 public class Items {
 	@Id
-	 @GeneratedValue(strategy=GenerationType.AUTO)
+//	 @GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 //	private String order_id;// (refers id column of SL_ORDERS. 1 Order can have many items), 
 	private String name;
 	private int quantity;
 	private double price;
 	private double amount;
-	@ManyToOne
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "orders_id")
     private Orders order;
 
@@ -63,6 +67,9 @@ public class Items {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-	
+	@Override
+	public	String toString() { 
+        return String.format("Name: " +name ); 
+	}
 
 }

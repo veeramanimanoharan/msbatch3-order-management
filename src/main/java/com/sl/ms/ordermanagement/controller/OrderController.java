@@ -55,5 +55,29 @@ public class OrderController {
 		{
 		return itemservice.getAllItems();
 		}
+		@GetMapping("/items/{id}")
+		private Items getitem(@PathVariable("id") int id) {
+			
+			return itemservice.getById(id);
+		}
+		
+		@GetMapping("/test/items")
+		private Items tt() 
+		{
+			List<Items> tt= itemservice.getAllItems();
+		return tt.get(0);
+		}
+		
+		
+		
+		@PostMapping("/test")
+		private Orders test(@RequestBody Orders order) {
+			orderservice.save(order);
+			System.out.println(order.getName());
+			System.out.println(order.getItems());
+			return order;
+			
+		}
+		
 	
 }
