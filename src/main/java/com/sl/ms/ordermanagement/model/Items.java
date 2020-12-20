@@ -16,6 +16,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table
 public class Items {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int item_id;
 //	 @GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 //	private String order_id;// (refers id column of SL_ORDERS. 1 Order can have many items), 

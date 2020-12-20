@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.sl.ms.ordermanagement.model.Items;
 import com.sl.ms.ordermanagement.model.Orders;
@@ -31,9 +32,30 @@ public class OrderController {
 		return orderservice.getAllOrders();
 	}
 	@PostMapping("/order")
-	private Orders saveOrder(@RequestBody Orders order) {
+	private String saveOrder(@RequestBody Orders order) {
+//		System.out.println(or -> order.getItems());
+		boolean  dontplaceOrder;
+		for(Items it : order.getItems()) {
+			boolean prodavai = CheckProduct(Integer.toString(it.getId()));
+			if (!prodavai) {
+				System.out.println("Product :"+it.getName()+"is not available to book. Order cannot be placed");
+				return "Product :"+it.getName()+"is not available to book. Order cannot be placed";
+				 
+			}
+			
+		}
+//		order.getItems().forEach(it->{
+//			boolean prodavai = CheckProduct(Integer.toString(it.getId()));
+//			if (!prodavai) {
+//				System.out.println("Product :"+it.getName()+"is not available to book. Order cannot be placed");
+////				return "jjjj";
+//				 
+//			}
+//			System.out.println("Item ID"+it.getId()+"-->"+prodavai);
+//			
+//		});
 		orderservice.save(order);
-		return order;
+		return "Order Posted Succesully";
 
 	}
 	@GetMapping("/order/{id}")
@@ -58,6 +80,24 @@ private Orders deleteOrder(@PathVariable("id") int id) {
 	Orders tt = orderservice.getById(id);
 	orderservice.delete(id);
 	return tt;
+}
+
+
+//		****************** Rest Template************
+private static RestTemplate restTemplate = new RestTemplate();
+@GetMapping("/CheckProduct/{id}")
+private boolean testProcheck(@PathVariable("id") int id) {
+//	System.out.println(id);
+	return CheckProduct(Integer.toString(id));
+	
+}
+private boolean CheckProduct(String Id) {
+	
+//	System.out.println(Id);
+	String url = "http://localhost:7777/dev//checkproductavail/";
+	String result = restTemplate.getForObject(url+Id,  String.class);
+	return Boolean.parseBoolean(result);
+	
 }
 
 
