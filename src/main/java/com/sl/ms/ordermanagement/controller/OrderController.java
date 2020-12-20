@@ -34,7 +34,7 @@ public class OrderController {
 	@PostMapping("/order")
 	private String saveOrder(@RequestBody Orders order) {
 //		System.out.println(or -> order.getItems());
-		boolean  dontplaceOrder;
+//		boolean  dontplaceOrder;
 		for(Items it : order.getItems()) {
 			boolean prodavai = CheckProduct(Integer.toString(it.getId()));
 			if (!prodavai) {
