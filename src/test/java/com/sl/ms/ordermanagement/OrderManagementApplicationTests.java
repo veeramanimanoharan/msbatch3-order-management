@@ -1,16 +1,31 @@
 package com.sl.ms.ordermanagement;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sl.ms.ordermanagement.controller.OrderController;
 import com.sl.ms.ordermanagement.model.Orders;
+import com.sl.ms.ordermanagement.service.OrderService;
 
+
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,18 +34,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
+@AutoConfigureMockMvc(addFilters=false)
+
+@ExtendWith(SpringExtension.class)
+//@WebMvcTest(value = OrderController.class, secure = false)
 class OrderManagementApplicationTests {
 
 	@Test
 	void contextLoads() {
 	}
 	
+	
+//	private WebApplicationContext webApplicationContext;
+	@MockBean
+	private OrderService orser;
 	@Autowired
-	private WebApplicationContext webApplicationContext;
-
 	private MockMvc mockMvc;
+	/*
+	private String token;
+//	token = getToken();// ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNDQwNzNfVmVlcmEiLCJleHAiOjE2MDkwMTgwOTUsImlhdCI6MTYwOTAwMzY5NX0.Isi1dN3Avx1rR-ssuMxok2q3V63cB6aG3Sg0_oPsjQidewo8O3Q5LW6W2lHf3C5chVLg75UkNt_hLNYFWq47MA";
+	
+	public String getToken() throws Exception {
+		
+		String username = "144073_Veera";
+	    String password = "password";
+
+	    String body = "{\"username\":\"" + username + "\", \"password\":\""
+	                  + password + "\"}";
+
+	    MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/authenticate")
+	    		.header("Content-Type","application/json")
+	            .content(body))
+//	    		.andDo(print())
+	            .andExpect(status().isOk()).andReturn();
+
+	    String response = result.getResponse().getContentAsString();
+	    response = response.replace("{\"access_token\": \"", "");
+	    
+		return response.replace("\"}", "");
+		
+	}
+	
+	@Test
+	public void existentUserCanGetTokenAndAuthentication() throws Exception {
+	    String username = "144073_Veera";
+	    String password = "password";
+
+	    String body = "{\"username\":\"" + username + "\", \"password\":\""
+	                  + password + "\"}";
+
+	    MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/authenticate")
+	    		.header("Content-Type","application/json")
+	            .content(body))
+//	    		.andDo(print())
+	            .andExpect(status().isOk()).andReturn();
+
+	    String response = result.getResponse().getContentAsString();
+	    response = response.replace("{\"access_token\": \"", "");
+	    this.token = response.replace("\"}", "");
+	    System.out.println(token);
+	    
+//	    mockMvc.perform(MockMvcRequestBuilders.get("/")
+//	        .header("Authorization", "Bearer " + token))
+////	    .andDo(print())
+//	        .andExpect(status().isOk());
+	}
+	*/
 
 	@Test
+	@DisplayName("Orders by ID")
+	
 	public void testOrdersControl () throws Exception {
 //		List<Orders> ords = new ArrayList();
 		String jsonString = "{\r\n"
@@ -75,12 +148,42 @@ class OrderManagementApplicationTests {
 				+ "        }\r\n"
 				+ "    ]\r\n"
 				+ "}";
-		Orders ords = new ObjectMapper().readValue(jsonString, Orders.class);
+//		Orders Mockord = new ObjectMapper().readValue(jsonString, Orders.class);
+		Orders Mockord = new Orders();
+		Mockord.setId(2);
+		Mockord.setName("mockOrder");
+		Mockord.setTotal_amount((double) 20);
+		
+//		System.out.println("vveera"+this.token);
+//		doReturn(Mockord).when(orser).getAllOrders();
+		doReturn(Mockord).when(orser).getById(Mockord.getId());
 		
 		
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		mockMvc.perform(get("/orders")).andExpect(status().isOk())
-		.andExpect(jsonPath("$.name").value("Veera2"));
+		 mockMvc.perform(MockMvcRequestBuilders.get("/order/{id}",2))
+//		 .header("Authorization", "Bearer " + this.token))
+		.andExpect(status().isOk())
+		.andDo(print())
+//		.andExpect(jsonPath("$.id").value(2))
+		;
+		 
+		
+		
+//		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+//		System.out.println(mockMvc.perform(get("/orders")).);
+//		mockMvc.perform(get("/orders")).andExpect(status().isOk())
+//		.andExpect(jsonPath("$.name").value("Veera2"));
+		
+		
+		
+//		mockMvc.perform(get("/orders"))
+//				.andExpect(status().isOk())
+//				.andExpect(jsonPath("$.name").value("Veera2")
+//						);
+		
 	}
+	
+	
+
+	
 	
 }
