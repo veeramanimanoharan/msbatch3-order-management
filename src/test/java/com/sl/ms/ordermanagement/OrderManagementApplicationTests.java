@@ -1,24 +1,20 @@
 package com.sl.ms.ordermanagement;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sl.ms.ordermanagement.controller.OrderController;
 import com.sl.ms.ordermanagement.model.Items;
 import com.sl.ms.ordermanagement.model.Orders;
 import com.sl.ms.ordermanagement.service.ItemService;
@@ -26,7 +22,6 @@ import com.sl.ms.ordermanagement.service.OrderService;
 
 
 import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -54,49 +49,33 @@ class OrderManagementApplicationTests {
 	private ItemService itmser;
 	@Autowired
 	private MockMvc mockMvc;
+	 
+	Orders Mockord;
+	Orders Mockord1;
+	List<Orders> Mockords;
+	List<Items> Mockitms;
+	Items Mockitm;
+	//Default Constructor ************************************
+	@BeforeEach
+	void OrderManagementApplicationTests11() throws JsonMappingException, JsonProcessingException{
+		OrderItemData data =new OrderItemData();
+		String jsonString = data.jsonString2;
+		String jsonString1 = data.jsonString1;
+	Mockord = new ObjectMapper().readValue(jsonString, Orders.class);
+	Mockord1 = new ObjectMapper().readValue(jsonString1, Orders.class);
 	
-	String jsonString = "{\r\n"
-			+ "    \"id\": 2,\r\n"
-			+ "    \"name\": \"Veera2\",\r\n"
-			+ "    \"total_amount\": 100.0,\r\n"
-			+ "    \"items\": [\r\n"
-			+ "        {\r\n"
-			+ "            \"id\": 1,\r\n"
-			+ "            \"name\": \"Item1\",\r\n"
-			+ "            \"quantity\": \"1\",\r\n"
-			+ "            \"price\": \"10\",\r\n"
-			+ "            \"amount\": \"100\"\r\n"
-			+ "        },\r\n"
-			+ "        {\r\n"
-			+ "            \"id\": 2,\r\n"
-			+ "            \"name\": \"Item2\",\r\n"
-			+ "            \"quantity\": \"1\",\r\n"
-			+ "            \"price\": \"10\",\r\n"
-			+ "            \"amount\": \"100\"\r\n"
-			+ "        },\r\n"
-			+ "        {\r\n"
-			+ "            \"id\": 3,\r\n"
-			+ "            \"name\": \"Item3\",\r\n"
-			+ "            \"quantity\": \"1\",\r\n"
-			+ "            \"price\": \"10\",\r\n"
-			+ "            \"amount\": \"100\"\r\n"
-			+ "        },\r\n"
-			+ "        {\r\n"
-			+ "            \"id\": 4,\r\n"
-			+ "            \"name\": \"Item4\",\r\n"
-			+ "            \"quantity\": \"1\",\r\n"
-			+ "            \"price\": \"10\",\r\n"
-			+ "            \"amount\": \"100\"\r\n"
-			+ "        },\r\n"
-			+ "        {\r\n"
-			+ "            \"id\": 5,\r\n"
-			+ "            \"name\": \"Item5\",\r\n"
-			+ "            \"quantity\": \"1\",\r\n"
-			+ "            \"price\": \"10\",\r\n"
-			+ "            \"amount\": \"100\"\r\n"
-			+ "        }\r\n"
-			+ "    ]\r\n"
-			+ "}";
+	Mockords = new ArrayList<Orders>();
+	Mockords.add(Mockord);
+	Mockords.add(Mockord1);
+	
+	
+	Mockitms = new ArrayList<Items>();
+
+	Mockitms.addAll(Mockord.getItems());
+	Mockitms.addAll(Mockord1.getItems());
+	
+	Mockitm = Mockitms.get(0);
+	}
 	/*
 	private String token;
 //	token = getToken();// ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNDQwNzNfVmVlcmEiLCJleHAiOjE2MDkwMTgwOTUsImlhdCI6MTYwOTAwMzY5NX0.Isi1dN3Avx1rR-ssuMxok2q3V63cB6aG3Sg0_oPsjQidewo8O3Q5LW6W2lHf3C5chVLg75UkNt_hLNYFWq47MA";
@@ -131,50 +110,21 @@ class OrderManagementApplicationTests {
 	@Test
 	@DisplayName("Orders by ID")	
 	public void testOrdersbyIdControl () throws Exception {
-//		List<Orders> ords = new ArrayList();
 
-		Orders Mockord = new ObjectMapper().readValue(jsonString, Orders.class);
-//		Orders Mockord = new Orders();
-//		Mockord.setId(2);
-//		Mockord.setName("mockOrder");
-//		Mockord.setTotal_amount((double) 20);
-		
-//		System.out.println("vveera"+this.token);
-//		doReturn(Mockord).when(orser).getAllOrders();
 		doReturn(Mockord).when(orser).getById(Mockord.getId());
-		
-		
+				
 		 mockMvc.perform(MockMvcRequestBuilders.get("/order/{id}",2))
-//		 .header("Authorization", "Bearer " + this.token))
 		.andExpect(status().isOk())
 //		.andDo(print())
 		.andExpect(jsonPath("$.id").value(2))
 		;
 		 
-		
-		
-//		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-//		System.out.println(mockMvc.perform(get("/orders")).);
-//		mockMvc.perform(get("/orders")).andExpect(status().isOk())
-//		.andExpect(jsonPath("$.name").value("Veera2"));
-		
-		
-		
-//		mockMvc.perform(get("/orders"))
-//				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$.name").value("Veera2")
-//						);
-		
 	}
 	
 	@Test
 	@DisplayName("All Orders ")	
 	public void testOrdersControl () throws Exception {
-
-		Orders Mockord = new ObjectMapper().readValue(jsonString, Orders.class);
-		List<Orders> Mockords = new ArrayList<Orders>();
-		Mockords.add(Mockord);
-		
+	
 		doReturn(Mockords).when(orser).getAllOrders();
 
 		 mockMvc.perform(MockMvcRequestBuilders.get("/orders"))
@@ -187,11 +137,6 @@ class OrderManagementApplicationTests {
 	@Test
 	@DisplayName("/items ")	
 	public void testItemControl () throws Exception {
-
-		Orders Mockord = new ObjectMapper().readValue(jsonString, Orders.class);
-		List<Items> Mockitms = new ArrayList<Items>();
-
-		Mockitms.addAll(Mockord.getItems());
 		
 		doReturn(Mockitms).when(itmser).getAllItems();
 
@@ -205,19 +150,105 @@ class OrderManagementApplicationTests {
 	@Test
 	@DisplayName("/items/ID")	
 	public void testItemIDControl () throws Exception {
+		
+		doReturn(Mockitm).when(itmser).getById(1);
+
+		 mockMvc.perform(MockMvcRequestBuilders.get("/items/{id}",1))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$.id").value(1))
+//		.andDo(print())
+		;
+	}
+	
+	@Test
+	@DisplayName("Order Delete")	
+	public void testOrderDeleteControl () throws Exception {
+
+		doReturn(Mockord).when(orser).getById(Mockord.getId());
+
+		 mockMvc.perform(MockMvcRequestBuilders.delete("/order/{id}",Mockord.getId()))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$.id").value(Mockord.getId()))
+//		.andDo(print())
+		;
+	}
+	
+/*
+ * 	
+ 
+	@Test
+	@DisplayName("/Order Save")	
+	public void testOrderSaveControl () throws Exception {
 
 		Orders Mockord = new ObjectMapper().readValue(jsonString, Orders.class);
 		List<Items> Mockitms = new ArrayList<Items>();
 
 		Mockitms.addAll(Mockord.getItems());
 		Items Mockitm = Mockitms.get(0);
-		doReturn(Mockitm).when(itmser).getById(1);
+		
+//		doReturn(Mockord).when(orser).save(Mockord);
 
-		 mockMvc.perform(MockMvcRequestBuilders.get("/items/{id}",1))
+		 mockMvc.perform(MockMvcRequestBuilders.post("/order")
+				 .contentType(MediaType.APPLICATION_JSON_VALUE)
+				 .content(new ObjectMapper().writeValueAsString(Mockord)))
+		 .andDo(print())
+//		 .andExpect(status().isCreated())
+//		.andExpect(jsonPath("$.id").value(2))
+//		.andDo(print())
+		;
+	}
+*/	
+//*******************************All Test Items*************************************************
+	@Test
+	@DisplayName("/test Order Save")	
+	public void testOrderSaveControl () throws Exception {
+
+		 mockMvc.perform(MockMvcRequestBuilders.post("/test")
+				 .contentType(MediaType.APPLICATION_JSON_VALUE)
+				 .content(new ObjectMapper().writeValueAsString(Mockord1)))
+//		 .andDo(print())
 		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.id").value(1))
-		.andDo(print())
+		.andExpect(jsonPath("$.id").value(Mockord1.getId()))
 		;
 	}
 	
+	@Test
+	@DisplayName("/test Item Save")	
+	public void testitemSaveControl () throws Exception {
+
+		 mockMvc.perform(MockMvcRequestBuilders.post("/order/items")
+				 .contentType(MediaType.APPLICATION_JSON_VALUE)
+				 .content(new ObjectMapper().writeValueAsString(Mockitm)))
+//		 .andDo(print())
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$.id").value(Mockitm.getId()))
+		;
+	}
+	@Test
+	@DisplayName("/Veera")	
+	public void testrootControl () throws Exception {
+		
+//		doReturn(Mockitm).when(itmser).getById(1);
+
+		 mockMvc.perform(MockMvcRequestBuilders.get("/"))
+		.andExpect(status().isOk())
+		.andExpect(content().string("Veera"))
+//		.andDo(print())
+		;
+	}
+	
+	
+	@Test
+	@DisplayName("Test /items/ID")	
+	public void testItemListControl () throws Exception {
+		
+		doReturn(Mockitms).when(itmser).getAllItems();
+
+		 mockMvc.perform(MockMvcRequestBuilders.get("/test/items"))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$.id").value(Mockitms.get(0).getId()))
+		.andDo(print())
+		;
+	}
 }
+
