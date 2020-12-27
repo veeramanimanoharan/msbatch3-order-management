@@ -35,7 +35,7 @@ import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 //@WebMvcTest(value = OrderController.class, secure = false)
-class OrderManagementApplicationTests {
+class OrderManagementApplicationTestsContoller {
 
 	@Test
 	void contextLoads() {
