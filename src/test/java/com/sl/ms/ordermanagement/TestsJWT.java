@@ -56,7 +56,7 @@ public class TestsJWT {
 		
 		 mockMvc.perform(MockMvcRequestBuilders.get("/"))
 			.andExpect(status().isUnauthorized())
-			.andDo(print())
+//			.andDo(print())
 			;
 
 	}
