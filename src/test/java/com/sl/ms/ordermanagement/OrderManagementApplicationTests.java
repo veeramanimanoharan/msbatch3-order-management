@@ -22,7 +22,6 @@ import com.sl.ms.ordermanagement.service.OrderService;
 
 
 import static org.mockito.Mockito.doReturn;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,7 +34,7 @@ import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 //@WebMvcTest(value = OrderController.class, secure = false)
-class OrderManagementApplicationTestsContoller {
+class TestsContoller {
 
 	@Test
 	void contextLoads() {
@@ -57,7 +56,7 @@ class OrderManagementApplicationTestsContoller {
 	Items Mockitm;
 	//Default Constructor ************************************
 	@BeforeEach
-	void OrderManagementApplicationTests11() throws JsonMappingException, JsonProcessingException{
+	void OrderTestsContoller() throws JsonMappingException, JsonProcessingException{
 		OrderItemData data =new OrderItemData();
 		String jsonString = data.jsonString2;
 		String jsonString1 = data.jsonString1;
@@ -76,36 +75,7 @@ class OrderManagementApplicationTestsContoller {
 	
 	Mockitm = Mockitms.get(0);
 	}
-	/*
-	private String token;
-//	token = getToken();// ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNDQwNzNfVmVlcmEiLCJleHAiOjE2MDkwMTgwOTUsImlhdCI6MTYwOTAwMzY5NX0.Isi1dN3Avx1rR-ssuMxok2q3V63cB6aG3Sg0_oPsjQidewo8O3Q5LW6W2lHf3C5chVLg75UkNt_hLNYFWq47MA";
 	
-		
-	@Test
-	public void existentUserCanGetTokenAndAuthentication() throws Exception {
-	    String username = "144073_Veera";
-	    String password = "password";
-
-	    String body = "{\"username\":\"" + username + "\", \"password\":\""
-	                  + password + "\"}";
-
-	    MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/authenticate")
-	    		.header("Content-Type","application/json")
-	            .content(body))
-//	    		.andDo(print())
-	            .andExpect(status().isOk()).andReturn();
-
-	    String response = result.getResponse().getContentAsString();
-	    response = response.replace("{\"access_token\": \"", "");
-	    this.token = response.replace("\"}", "");
-	    System.out.println(token);
-	    
-//	    mockMvc.perform(MockMvcRequestBuilders.get("/")
-//	        .header("Authorization", "Bearer " + token))
-////	    .andDo(print())
-//	        .andExpect(status().isOk());
-	}
-	*/
 
 	@Test
 	@DisplayName("Orders by ID")	
@@ -173,31 +143,8 @@ class OrderManagementApplicationTestsContoller {
 		;
 	}
 	
-/*
- * 	
- 
-	@Test
-	@DisplayName("/Order Save")	
-	public void testOrderSaveControl () throws Exception {
 
-		Orders Mockord = new ObjectMapper().readValue(jsonString, Orders.class);
-		List<Items> Mockitms = new ArrayList<Items>();
 
-		Mockitms.addAll(Mockord.getItems());
-		Items Mockitm = Mockitms.get(0);
-		
-//		doReturn(Mockord).when(orser).save(Mockord);
-
-		 mockMvc.perform(MockMvcRequestBuilders.post("/order")
-				 .contentType(MediaType.APPLICATION_JSON_VALUE)
-				 .content(new ObjectMapper().writeValueAsString(Mockord)))
-		 .andDo(print())
-//		 .andExpect(status().isCreated())
-//		.andExpect(jsonPath("$.id").value(2))
-//		.andDo(print())
-		;
-	}
-*/	
 //*******************************All Test Items*************************************************
 	@Test
 	@DisplayName("/test Order Save")	
@@ -247,7 +194,7 @@ class OrderManagementApplicationTestsContoller {
 		 mockMvc.perform(MockMvcRequestBuilders.get("/test/items"))
 		.andExpect(status().isOk())
 		.andExpect(jsonPath("$.id").value(Mockitms.get(0).getId()))
-		.andDo(print())
+//		.andDo(print())
 		;
 	}
 }
