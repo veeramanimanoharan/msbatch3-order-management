@@ -6,8 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,8 +23,13 @@ public class OrderService {
 
 	private static Logger logger = LoggerFactory.getLogger(OrderService.class);
 	
-//	@Autowired
-	private static RestTemplate restTemplate = new RestTemplate();
+	@Autowired
+	private RestTemplate restTemplate ; //= new RestTemplate();
+	
+	@Bean
+	public RestTemplate getRestTemplate() {
+		return new RestTemplate();
+	}
 	
 	public List<Orders> getAllOrders(){
 		List<Orders> allOrders=  new ArrayList<Orders>();
@@ -48,7 +53,9 @@ public class OrderService {
 		logger.info("Into CheckProduct Service ID ="+Id);
 //		System.out.println(Id);
 		String url = "http://localhost:7777/dev//checkproductavail/";
-		String result = restTemplate.getForObject(url+Id,  String.class);
+//		String result = restTemplate.getForObject(url+Id,  String.class);
+		String result = (String) restTemplate.exchange(url+Id, HttpMethod.GET, null, String.class).getBody();
+		
 		logger.info("result="+result);
 		return result;
 		
