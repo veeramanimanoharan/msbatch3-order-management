@@ -12,16 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-
 import com.sl.ms.ordermanagement.model.Items;
 import com.sl.ms.ordermanagement.model.Orders;
 import com.sl.ms.ordermanagement.service.ItemService;
 import com.sl.ms.ordermanagement.service.OrderService;
-
-import brave.sampler.Sampler;
 
 @Component
 @RestController
@@ -29,10 +23,7 @@ public class OrderController {
 
 	private static Logger logger = LoggerFactory.getLogger(OrderController.class);
 	
-	@Autowired
-	public Sampler defaultSampler() {
-		return Sampler.ALWAYS_SAMPLE;
-	}
+	
 	@Autowired
 	OrderService orderservice;
 
