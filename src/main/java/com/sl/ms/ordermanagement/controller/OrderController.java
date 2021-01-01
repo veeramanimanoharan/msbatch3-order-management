@@ -2,6 +2,8 @@ package com.sl.ms.ordermanagement.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,16 +15,24 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
 import com.sl.ms.ordermanagement.model.Items;
 import com.sl.ms.ordermanagement.model.Orders;
 import com.sl.ms.ordermanagement.service.ItemService;
 import com.sl.ms.ordermanagement.service.OrderService;
 
+import brave.sampler.Sampler;
+
 @Component
 @RestController
 public class OrderController {
 
-
+	private static Logger logger = LoggerFactory.getLogger(OrderController.class);
+	
+	@Autowired
+	public Sampler defaultSampler() {
+		return Sampler.ALWAYS_SAMPLE;
+	}
 	@Autowired
 	OrderService orderservice;
 
@@ -32,6 +42,7 @@ public class OrderController {
 	@GetMapping("/orders")
 	private List<Orders> getAllOrders() 
 	{
+		logger.info("Into getAllOrders Controller");
 		return orderservice.getAllOrders();
 	}
 	@PostMapping("/order")
