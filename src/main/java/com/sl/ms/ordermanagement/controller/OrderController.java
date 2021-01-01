@@ -40,13 +40,14 @@ public class OrderController {
 	private String saveOrder(@RequestBody Orders order) {
 //		System.out.println(or -> order.getItems());
 //		boolean  dontplaceOrder;
+		logger.info("Into saveOrder Controller");
 		for(Items it : order.getItems()) {
 			try {
 			String Priavailstr = orderservice.CheckProduct(Integer.toString(it.getId()));
 			if (Priavailstr=="Error") {return "Looks like service unavailable. Please try later.";}
 			boolean prodavai = Boolean.parseBoolean(Priavailstr);
 			if (!prodavai) {
-				System.out.println("Product :"+it.getName()+"is not available to book. Order cannot be placed");
+				logger.info("Product :"+it.getName()+"is not available to book. Order cannot be placed");
 				return "Product :"+it.getName()+"is not available to book. Order cannot be placed";
 				 
 			}
