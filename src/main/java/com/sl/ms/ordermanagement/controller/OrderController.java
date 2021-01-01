@@ -3,6 +3,7 @@ package com.sl.ms.ordermanagement.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.sl.ms.ordermanagement.model.Items;
 import com.sl.ms.ordermanagement.model.Orders;
 import com.sl.ms.ordermanagement.service.ItemService;
 import com.sl.ms.ordermanagement.service.OrderService;
 
+@Component
 @RestController
 public class OrderController {
 
@@ -36,12 +39,19 @@ public class OrderController {
 //		System.out.println(or -> order.getItems());
 //		boolean  dontplaceOrder;
 		for(Items it : order.getItems()) {
-			boolean prodavai = CheckProduct(Integer.toString(it.getId()));
+			try {
+			String Priavailstr = orderservice.CheckProduct(Integer.toString(it.getId()));
+			if (Priavailstr=="Error") {return "Looks like service unavailable. Please try later.";}
+			boolean prodavai = Boolean.parseBoolean(Priavailstr);
 			if (!prodavai) {
 				System.out.println("Product :"+it.getName()+"is not available to book. Order cannot be placed");
 				return "Product :"+it.getName()+"is not available to book. Order cannot be placed";
 				 
 			}
+			}catch(Exception e ) {
+				return "Error";
+			}
+		
 			
 		}
 //		order.getItems().forEach(it->{
@@ -84,22 +94,13 @@ private Orders deleteOrder(@PathVariable("id") int id) {
 
 
 //		****************** Rest Template************
-private static RestTemplate restTemplate = new RestTemplate();
-@GetMapping("/CheckProduct/{id}")
-private boolean testProcheck(@PathVariable("id") int id) {
-//	System.out.println(id);
-	return CheckProduct(Integer.toString(id));
-	
-}
-private boolean CheckProduct(String Id) {
-	
-//	System.out.println(Id);
-	String url = "http://localhost:7777/dev//checkproductavail/";
-	String result = restTemplate.getForObject(url+Id,  String.class);
-	return Boolean.parseBoolean(result);
-	
-}
 
+@GetMapping("/CheckProduct/{id}")
+private String testProcheck(@PathVariable("id") int id) {
+//	System.out.println(id);
+	return orderservice.CheckProduct(Integer.toString(id));
+	
+}
 
 	//		****************** Testing************
 	@GetMapping("/")
