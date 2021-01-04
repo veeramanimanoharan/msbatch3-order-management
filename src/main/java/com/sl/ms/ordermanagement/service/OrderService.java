@@ -44,9 +44,11 @@ public class OrderService {
 		logger.info("Into save Service");
 		orderrepo.save(order);
 	}
-	public Orders getById(int id){
+	public Orders getById(int id) throws NotFoundException{
 		logger.info("In to Get Order by Id-"+id);
-		return orderrepo.findById(id).get();
+		return orderrepo.findById(id)
+				.orElseThrow(() -> new NotFoundException(String.format("Order %d not found", id)));
+//				.orElseThrow(() -> new IllegalArgumentException("No Such Order found Veera"));
 	}
 	public void delete(int id) {
 		logger.info("Into Delete Service");

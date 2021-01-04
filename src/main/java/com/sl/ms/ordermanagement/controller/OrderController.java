@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.sl.ms.ordermanagement.model.Items;
 import com.sl.ms.ordermanagement.model.Orders;
@@ -75,13 +76,15 @@ public class OrderController {
 
 	}
 	@GetMapping("/order/{id}")
-	private Orders getOrder(@PathVariable("id") int id)  {
+	private Orders getOrder(@PathVariable("id") int id) throws Exception  {
 		logger.info("InTo Get Order by ID-"+id);
-		return orderservice.getById(id);
+		Orders or = orderservice.getById(id);
+	
+		return  or;
 	}
 	
 	@GetMapping("/items")
-	private List<Items> getAllitems() 
+	private @ResponseBody List<Items> getAllitems() 
 	{
 		logger.info("into Get All Items");
 		return itemservice.getAllItems();
@@ -93,7 +96,7 @@ public class OrderController {
 	}
 
 	@DeleteMapping("/order/{id}")
-	private Orders deleteOrder(@PathVariable("id") int id) {
+	private Orders deleteOrder(@PathVariable("id") int id) throws NotFoundException {
 		logger.info("Into Delete Order "+id);
 		Orders tt = orderservice.getById(id);
 		orderservice.delete(id);
@@ -126,10 +129,13 @@ public class OrderController {
 	}
 
 	@GetMapping("/test/items")
-	private Items tt() 
+	private Items tt() throws Exception 
 	{
 		logger.info("Into Test Item");
 		List<Items> tt= itemservice.getAllItems();
+		if (true) {
+			throw new Exception("Veera Exception");
+		}
 		return tt.get(0);
 	}
 
