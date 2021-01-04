@@ -17,6 +17,8 @@ import com.sl.ms.ordermanagement.model.Orders;
 import com.sl.ms.ordermanagement.service.ItemService;
 import com.sl.ms.ordermanagement.service.OrderService;
 
+import javassist.NotFoundException;
+
 @Component
 @RestController
 public class OrderController {
@@ -44,6 +46,7 @@ public class OrderController {
 		for(Items it : order.getItems()) {
 			try {
 			String Priavailstr = orderservice.CheckProduct(Integer.toString(it.getId()));
+			logger.info("Priavailstr :"+Priavailstr);
 			if (Priavailstr=="Error") {return "Looks like service unavailable. Please try later.";}
 			boolean prodavai = Boolean.parseBoolean(Priavailstr);
 			if (!prodavai) {
@@ -72,47 +75,51 @@ public class OrderController {
 
 	}
 	@GetMapping("/order/{id}")
-	private Orders getOrder(@PathVariable("id") int id) {
-
+	private Orders getOrder(@PathVariable("id") int id)  {
+		logger.info("InTo Get Order by ID-"+id);
 		return orderservice.getById(id);
 	}
-
+	
 	@GetMapping("/items")
 	private List<Items> getAllitems() 
 	{
+		logger.info("into Get All Items");
 		return itemservice.getAllItems();
 	}
 	@GetMapping("/items/{id}")
 	private Items getitem(@PathVariable("id") int id) {
-
+		logger.info("Into Items by ID-"+id);
 		return itemservice.getById(id);
 	}
 
-@DeleteMapping("/order/{id}")
-private Orders deleteOrder(@PathVariable("id") int id) {
-	Orders tt = orderservice.getById(id);
-	orderservice.delete(id);
-	return tt;
-}
+	@DeleteMapping("/order/{id}")
+	private Orders deleteOrder(@PathVariable("id") int id) {
+		logger.info("Into Delete Order "+id);
+		Orders tt = orderservice.getById(id);
+		orderservice.delete(id);
+		logger.info("Successfully Deleted -"+id);
+		return tt;
+	}
 
 
-//		****************** Rest Template************
+	//		****************** Rest Template************
 
-@GetMapping("/CheckProduct/{id}")
-private String testProcheck(@PathVariable("id") int id) {
-//	System.out.println(id);
-	return orderservice.CheckProduct(Integer.toString(id));
-	
-}
+	@GetMapping("/CheckProduct/{id}")
+	private String testProcheck(@PathVariable("id") int id) {
+		logger.info("Into Check Product by ID"+id);
+		return orderservice.CheckProduct(Integer.toString(id));
+
+	}
 
 	//		****************** Testing************
 	@GetMapping("/")
 	private String msg() {
-		System.out.println("Veera");
+		logger.info("Into / page");
 		return "Veera";
 	}
 	@PostMapping("/order/items")
 	private Items saveItem(@RequestBody Items item) {
+		logger.info("Into Save Controller - "+item.getName());
 		itemservice.save(item);
 		return item;
 
@@ -121,6 +128,7 @@ private String testProcheck(@PathVariable("id") int id) {
 	@GetMapping("/test/items")
 	private Items tt() 
 	{
+		logger.info("Into Test Item");
 		List<Items> tt= itemservice.getAllItems();
 		return tt.get(0);
 	}
@@ -130,8 +138,7 @@ private String testProcheck(@PathVariable("id") int id) {
 	@PostMapping("/test")
 	private Orders test(@RequestBody Orders order) {
 		orderservice.save(order);
-		System.out.println(order.getName());
-		System.out.println(order.getItems());
+		logger.info("Into Post Test -"+order.getItems());
 		return order;
 
 	}
