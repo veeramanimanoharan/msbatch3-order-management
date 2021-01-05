@@ -4,14 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.sl.ms.ordermanagement.model.Items;
@@ -20,22 +13,10 @@ import com.sl.ms.ordermanagement.repository.OrderRepository;
 import com.sl.ms.ordermanagement.service.ItemService;
 import com.sl.ms.ordermanagement.service.OrderService;
 
-import javassist.NotFoundException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,7 +39,7 @@ public class ProductServiceTest {
     
 
     private WireMockServer wireMockServer = new WireMockServer(7777);
-    private CloseableHttpClient httpClient = HttpClients.createDefault();
+//    private CloseableHttpClient httpClient = HttpClients.createDefault();
 
     @Autowired
 	private OrderService ordSer;
@@ -69,8 +50,8 @@ public class ProductServiceTest {
     
 	@MockBean
 	private ItemService itmser;
-	@Autowired
-	private MockMvc mockMvc;
+//	@Autowired
+//	private MockMvc mockMvc;
 	 
 	Orders Mockord;
 	Orders Mockord1;

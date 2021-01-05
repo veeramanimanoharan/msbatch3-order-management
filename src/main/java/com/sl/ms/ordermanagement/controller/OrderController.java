@@ -128,6 +128,7 @@ public class OrderController {
 
 	}
 
+	@SuppressWarnings("unused")
 	@GetMapping("/test/items")
 	private Items tt() throws Exception 
 	{
