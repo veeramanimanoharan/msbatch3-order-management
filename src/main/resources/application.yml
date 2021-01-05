@@ -1,6 +1,23 @@
 spring:
   profiles.active: dev
   application.name: OrderManagement
+  datasource:
+    url: jdbc:h2:mem:InventoryManagement
+    driverClassName : org.h2.Driver
+    username: sa
+    password:
+  jpa.database-platform: org.hibernate.dialect.H2Dialect
+  h2.console.enabled : true
+    
+jwt:
+  secret: 144073
+  expiryHours: 4
+  token.uri: /authenticate
+  username: 144073_Veera
+  password: $2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6
+  
+server:
+  port : 8889
 ---
 spring:
   profiles: dev
