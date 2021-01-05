@@ -20,12 +20,17 @@ import com.sl.ms.ordermanagement.model.Orders;
 import com.sl.ms.ordermanagement.service.ItemService;
 import com.sl.ms.ordermanagement.service.OrderService;
 
-
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +61,7 @@ class TestsContoller {
 	Items Mockitm;
 	//Default Constructor ************************************
 	@BeforeEach
-	void OrderTestsContoller() throws JsonMappingException, JsonProcessingException{
+	void OrderTestsContoller() throws IOException{
 		OrderItemData data =new OrderItemData();
 		String jsonString = data.jsonString2;
 		String jsonString1 = data.jsonString1;
@@ -142,13 +147,84 @@ class TestsContoller {
 //		.andDo(print())
 		;
 	}
-	
+//************************** Save********************************************************
+	@Test
+	@DisplayName("/CheckProduct/{id} TRUE")	
+	public void testCheckProductTrue () throws Exception {
+		doReturn("true").when(orser).CheckProduct("1");
+		
+    	mockMvc.perform(MockMvcRequestBuilders.get("/CheckProduct/1")
+				 .contentType(MediaType.APPLICATION_JSON_VALUE)
+				 .content(new ObjectMapper().writeValueAsString(Mockord)))
+//		 .andDo(print())
+		.andExpect(status().isOk())
+		.andExpect(content().string("true"))
+		;
+    	
+    	
+    }
 
+	 @Test
+		@DisplayName("/CheckProduct/{id} False")	
+		public void testCheckProductFalse () throws Exception {
+	    	
+		 doReturn("false").when(orser).CheckProduct("2");	
+		 
+	    	mockMvc.perform(MockMvcRequestBuilders.get("/CheckProduct/2")
+					 .contentType(MediaType.APPLICATION_JSON_VALUE)
+					 .content(new ObjectMapper().writeValueAsString(Mockord1)))
+//			 .andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(content().string("false"))
+			;
+	    	
+	    	
+	    }
+	   
+	    @Test
+		@DisplayName("/Order Save")	
+		public void testOrderSaveControl () throws Exception {
+	    	
+	    	doReturn("true").when(orser).CheckProduct("1");
+	    	doReturn("true").when(orser).CheckProduct("2");
+	    	doReturn("true").when(orser).CheckProduct("3");
+	    	doReturn("true").when(orser).CheckProduct("4");
+	    	doReturn("true").when(orser).CheckProduct("5");
+	    	
+			 mockMvc.perform(MockMvcRequestBuilders.post("/order")
+					 .contentType(MediaType.APPLICATION_JSON_VALUE)
+					 .content(new ObjectMapper().writeValueAsString(Mockord)))
+//			 .andDo(print())
+			 .andExpect(content().string("Order Posted Succesully"))
+			 ;
+	    }
+
+	
+	    @Test
+		@DisplayName("/Order Save Fail")	
+		public void testOrderSaveControlFail () throws Exception {
+	    	
+	    	doReturn("true").when(orser).CheckProduct("1");
+	    	doReturn("false").when(orser).CheckProduct("2");
+	    	doReturn("true").when(orser).CheckProduct("3");
+	    	doReturn("true").when(orser).CheckProduct("4");
+	    	doReturn("true").when(orser).CheckProduct("5");
+
+			 mockMvc.perform(MockMvcRequestBuilders.post("/order")
+					 .contentType(MediaType.APPLICATION_JSON_VALUE)
+					 .content(new ObjectMapper().writeValueAsString(Mockord)))
+//			 .andDo(print())
+			 .andReturn()
+			    .getResponse()
+			    .getContentAsString()
+			    .contains("not available to book. Order cannot be placed");
+			 ; //content().string(" not available to book. Order cannot be placed")
+	    }
 
 //*******************************All Test Items*************************************************
 	@Test
 	@DisplayName("/test Order Save")	
-	public void testOrderSaveControl () throws Exception {
+	public void testOrderSaveControltest () throws Exception {
 
 		 mockMvc.perform(MockMvcRequestBuilders.post("/test")
 				 .contentType(MediaType.APPLICATION_JSON_VALUE)

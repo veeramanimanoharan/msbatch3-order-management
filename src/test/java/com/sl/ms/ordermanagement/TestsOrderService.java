@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,8 @@ import com.sl.ms.ordermanagement.model.Orders;
 import com.sl.ms.ordermanagement.repository.OrderRepository;
 import com.sl.ms.ordermanagement.service.OrderService;
 
+import javassist.NotFoundException;
+
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters=false)
 @ExtendWith(SpringExtension.class)
@@ -46,7 +49,7 @@ public class TestsOrderService {
 	Items Mockitm;
 	//Default Constructor ************************************
 	@BeforeEach
-	void OrderManagementApplicationTests11() throws JsonMappingException, JsonProcessingException{
+	void OrderManagementApplicationTests11() throws IOException{
 		OrderItemData data =new OrderItemData();
 		String jsonString = data.jsonString2;
 		String jsonString1 = data.jsonString1;
@@ -68,7 +71,7 @@ public class TestsOrderService {
 	
 	@Test
 	@DisplayName("Orders by ID")	
-	public void testOrderbyIdService() {
+	public void testOrderbyIdService() throws NotFoundException {
 		
 //		doReturn( Mockord).when(ordRepo).findById(2);
 		when(ordRepo.findById(Mockord.getId())).thenReturn(Optional.of(Mockord));

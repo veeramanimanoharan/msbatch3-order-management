@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,9 +16,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.sl.ms.ordermanagement.model.Items;
 import com.sl.ms.ordermanagement.model.Orders;
+import com.sl.ms.ordermanagement.repository.OrderRepository;
 import com.sl.ms.ordermanagement.service.ItemService;
 import com.sl.ms.ordermanagement.service.OrderService;
 
+import javassist.NotFoundException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -44,6 +51,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters=false)
 @ExtendWith(SpringExtension.class)
+
 public class ProductServiceTest {
 //	http://localhost:7777/dev//checkproductavail/1
 	 private static final String PATH = "/dev/checkproductavail/";
@@ -51,9 +59,14 @@ public class ProductServiceTest {
 
     private WireMockServer wireMockServer = new WireMockServer(7777);
     private CloseableHttpClient httpClient = HttpClients.createDefault();
-    
+
+    @Autowired
+	private OrderService ordSer;
+	
 	@MockBean
-	private OrderService orser;
+	private OrderRepository ordRepo;
+	
+    
 	@MockBean
 	private ItemService itmser;
 	@Autowired
@@ -67,7 +80,7 @@ public class ProductServiceTest {
     
 	 
     @BeforeEach
-    public void init() throws JsonMappingException, JsonProcessingException {
+    public void init() throws IOException {
     
     	
     		OrderItemData data =new OrderItemData();
@@ -79,7 +92,7 @@ public class ProductServiceTest {
     	Mockords = new ArrayList<Orders>();
     	Mockords.add(Mockord);
     	Mockords.add(Mockord1);
-    	
+//    	System.out.println(jsonString);
     	
     	Mockitms = new ArrayList<Items>();
 
@@ -97,97 +110,21 @@ public class ProductServiceTest {
     	wireMockServer.stop();
     }
     
-    
     @Test
-	@DisplayName("/CheckProduct/{id} TRUE")	
-	public void testCheckProductTrue () throws Exception {
+	@DisplayName("CheckProduct")	
+	public void testCheckProduct()  {
     	
     	configureFor("localhost", 7777);
-   	 stubFor(get(urlEqualTo(PATH+"1")).willReturn(aResponse().withBody("true")));
-   	stubFor(get(urlEqualTo(PATH+"2")).willReturn(aResponse().withBody("false")));
-    	mockMvc.perform(MockMvcRequestBuilders.get("/CheckProduct/1")
-				 .contentType(MediaType.APPLICATION_JSON_VALUE)
-				 .content(new ObjectMapper().writeValueAsString(Mockord1)))
-//		 .andDo(print())
-		.andExpect(status().isOk())
-		.andExpect(content().string("true"))
-		;
-    	
-    	
-    }
-    
-    @Test
-	@DisplayName("/CheckProduct/{id} False")	
-	public void testCheckProductFalse () throws Exception {
-    	
-    	configureFor("localhost", 7777);
-   	 stubFor(get(urlEqualTo(PATH+"1")).willReturn(aResponse().withBody("true")));
-   	stubFor(get(urlEqualTo(PATH+"2")).willReturn(aResponse().withBody("false")));
-    	mockMvc.perform(MockMvcRequestBuilders.get("/CheckProduct/2")
-				 .contentType(MediaType.APPLICATION_JSON_VALUE)
-				 .content(new ObjectMapper().writeValueAsString(Mockord1)))
-//		 .andDo(print())
-		.andExpect(status().isOk())
-		.andExpect(content().string("false"))
-		;
-    	
-    	
-    }
-    
-    @Test
-	@DisplayName("/Order Save")	
-	public void testOrderSaveControl () throws Exception {
-    	
-       	configureFor("localhost", 7777);
     	stubFor(get(urlEqualTo(PATH+"1")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"2")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"3")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"4")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"5")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"6")).willReturn(aResponse().withBody("true")));
-
-		 mockMvc.perform(MockMvcRequestBuilders.post("/order")
-				 .contentType(MediaType.APPLICATION_JSON_VALUE)
-				 .content(new ObjectMapper().writeValueAsString(Mockord)))
-//		 .andDo(print())
-		 .andExpect(content().string("Order Posted Succesully"))
-		 ;
-    }
-
-
-    @Test
-	@DisplayName("/Order Save Fail")	
-	public void testOrderSaveControlFail () throws Exception {
+    	stubFor(get(urlEqualTo(PATH+"2")).willReturn(aResponse().withBody("false")));     	
     	
-       	configureFor("localhost", 7777);
-    	stubFor(get(urlEqualTo(PATH+"1")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"2")).willReturn(aResponse().withBody("false")));
-    	stubFor(get(urlEqualTo(PATH+"3")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"4")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"5")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"6")).willReturn(aResponse().withBody("true")));
-
-		 mockMvc.perform(MockMvcRequestBuilders.post("/order")
-				 .contentType(MediaType.APPLICATION_JSON_VALUE)
-				 .content(new ObjectMapper().writeValueAsString(Mockord)))
-//		 .andDo(print())
-		 .andReturn()
-		    .getResponse()
-		    .getContentAsString()
-		    .contains("not available to book. Order cannot be placed");
-		 ; //content().string(" not available to book. Order cannot be placed")
+    	String result = ordSer.CheckProduct("1");
+    	assertEquals("true",result);
+    	
+      	String result1 = ordSer.CheckProduct("2");
+    	assertEquals("false",result1);
     }
-    
-    
-    
-    private static String convertResponseToString(HttpResponse response) throws IOException {
- 
+   
 
-        InputStream responseStream = response.getEntity().getContent();
-        Scanner scanner = new Scanner(responseStream, "UTF-8");
-        String stringResponse = scanner.useDelimiter("\\Z").next();
-        scanner.close();
-        return stringResponse;
-    }
     
 }

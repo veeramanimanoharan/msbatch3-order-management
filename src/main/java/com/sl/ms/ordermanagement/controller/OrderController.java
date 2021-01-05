@@ -133,7 +133,7 @@ public class OrderController {
 	{
 		logger.info("Into Test Item");
 		List<Items> tt= itemservice.getAllItems();
-		if (true) {
+		if (false) {
 			throw new Exception("Veera Exception");
 		}
 		return tt.get(0);
