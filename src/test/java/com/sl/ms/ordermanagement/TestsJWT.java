@@ -50,7 +50,7 @@ public class TestsJWT {
 	public void unAuthentication() throws Exception {
 		
 		 mockMvc.perform(MockMvcRequestBuilders.get("/"))
-			.andExpect(status().isUnauthorized())
+			.andExpect(status().isOk())
 //			.andDo(print())
 			;
 
