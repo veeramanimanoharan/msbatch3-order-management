@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -32,7 +33,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters=false)
 @ExtendWith(SpringExtension.class)
-
+@ActiveProfiles("test") 
 public class ProductServiceTest {
 //	http://localhost:7777/dev//checkproductavail/1
 	 private static final String PATH = "/dev/checkproductavail/";

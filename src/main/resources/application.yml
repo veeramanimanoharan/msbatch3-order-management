@@ -18,6 +18,10 @@ jwt:
   
 server:
   port : 8889
+  
+inventory:
+  #url: http://localhost:7777/dev/checkproductavail/
+  url: http://inventory:7777/dev/checkproductavail/ 
 ---
 spring:
   profiles: dev
@@ -25,10 +29,17 @@ server:
   servlet:
     context-path: /dev
   port : 8888
-  
+
+inventory:
+  #url: http://localhost:7777/dev/checkproductavail/
+  url: http://inventory:7778/checkproductavail/   
 ---
 spring:
   profiles: production
 
-     
+---
+spring:
+  profiles: test
+inventory:
+  url: http://localhost:7777/dev/checkproductavail/     
     
