@@ -92,20 +92,20 @@ public class ProductServiceTest {
     	wireMockServer.stop();
     }
     
-    @Test
-	@DisplayName("CheckProduct")	
-	public void testCheckProduct()  {
-    	
-    	configureFor("localhost", 7777);
-    	stubFor(get(urlEqualTo(PATH+"1")).willReturn(aResponse().withBody("true")));
-    	stubFor(get(urlEqualTo(PATH+"2")).willReturn(aResponse().withBody("false")));     	
-    	
-    	String result = ordSer.CheckProduct("1");
-    	assertEquals("true",result);
-    	
-      	String result1 = ordSer.CheckProduct("2");
-    	assertEquals("false",result1);
-    }
+//    @Test
+//	@DisplayName("CheckProduct")	
+//	public void testCheckProduct()  {
+//    	
+//    	configureFor("localhost", 7777);
+//    	stubFor(get(urlEqualTo(PATH+"1")).willReturn(aResponse().withBody("true")));
+//    	stubFor(get(urlEqualTo(PATH+"2")).willReturn(aResponse().withBody("false")));     	
+//    	
+//    	String result = ordSer.CheckProduct("1");
+//    	assertEquals("true",result);
+//    	
+//      	String result1 = ordSer.CheckProduct("2");
+//    	assertEquals("false",result1);
+//    }
    
 
     
