@@ -32,7 +32,7 @@ server:
 
 inventory:
   #url: http://localhost:7777/dev/checkproductavail/
-  url: http://inventory:7777/dev/checkproductavail/   
+  url: http://inventory-service:7777/dev/checkproductavail/   
 ---
 spring:
   profiles: production
